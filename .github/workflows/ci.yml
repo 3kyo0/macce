@@ -13,11 +13,16 @@ concurrency:
 
 jobs:
   build:
-    name: build (macos-13, Intel)
-    # macos-13 is the last Intel-based macOS runner. The codebase has
-    # x86_64-specific bits (USER_END mask in lib/memreader.c), so pin to
-    # Intel until ARM is supported.
-    runs-on: macos-13
+    name: build (macos-latest, ARM64)
+    # macos-latest is currently ARM64 (Apple Silicon). The codebase is
+    # mostly portable: mach_vm_* APIs are identical across archs, the
+    # USER_END = 0x7fff_ffff_ffff cap is far above ARM macOS user VA range
+    # so it doesn't truncate scans, and clang auto-vectorises the aligned
+    # KERNEL switch into NEON instead of SSE2.
+    # NOTE: macos-13 Intel runners are being deprecated by GitHub and
+    # queue times are unreliable; if you want explicit Intel verification
+    # locally, build with `arch -x86_64 make` under Rosetta.
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
