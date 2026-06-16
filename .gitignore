@@ -1,0 +1,21 @@
+# Build artifacts
+*.o
+*.a
+*.dSYM/
+/macce
+/macce-gui
+
+# Vendored third-party (cloned by `make imgui`)
+gui/third_party/
+
+# macOS
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Local session state (CLI writes to /tmp/macce.session by default)
+*.session
+*.session.aob
