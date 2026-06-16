@@ -1,5 +1,7 @@
 # MacCE
 
+[简体中文 »](README_zh.md)
+
 A native, Cheat-Engine–style memory scanner for **macOS targets running under
 any Windows translation layer** — Wine, CrossOver, Whisky, Kegworks,
 PlayOnMac, Apple's Game Porting Toolkit, or Game-bundled custom Wine builds.
