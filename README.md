@@ -1,5 +1,8 @@
 # MacCE
 
+[![CI](https://github.com/3kyo0/macce/actions/workflows/ci.yml/badge.svg)](https://github.com/3kyo0/macce/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 [简体中文 »](README_zh.md)
 
 A native, Cheat-Engine–style memory scanner for **macOS targets running under

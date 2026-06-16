@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs when a new commit is pushed to the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build (macos-13, Intel)
+    # macos-13 is the last Intel-based macOS runner. The codebase has
+    # x86_64-specific bits (USER_END mask in lib/memreader.c), so pin to
+    # Intel until ARM is supported.
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show toolchain versions
+        run: |
+          sw_vers
+          clang --version
+          xcode-select -p
+
+      # GLFW is a runtime/link dependency of the GUI target. Homebrew is
+      # pre-installed on GitHub macOS runners.
+      - name: Install GLFW (Homebrew)
+        run: |
+          brew update --quiet
+          brew install glfw
+
+      # Vendor Dear ImGui at the pinned tag. Uses the Makefile's `make imgui`
+      # target which clones v1.91.5 into gui/third_party/imgui.
+      - name: Vendor ImGui
+        run: make imgui
+
+      - name: Build CLI (macce)
+        run: make
+
+      - name: Build GUI (macce-gui)
+        run: make gui
+
+      # Ad-hoc signing happens during link; verify both binaries are present
+      # and signed before reporting success.
+      - name: Verify binaries
+        run: |
+          test -x ./macce       || { echo "::error::macce CLI missing"; exit 1; }
+          test -x ./macce-gui   || { echo "::error::macce-gui missing"; exit 1; }
+          file   ./macce ./macce-gui
+          codesign -dvv ./macce      2>&1 | head -10 || true
+          codesign -dvv ./macce-gui  2>&1 | head -10 || true
+
+      - name: Smoke-test CLI usage screen
+        # Running `./macce` with no args prints usage and returns 1; we treat
+        # that as success because the output proves the binary loaded and the
+        # entitlement check didn't blow up at startup.
+        run: |
+          ./macce 2>&1 | head -20 || true

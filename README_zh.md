@@ -1,5 +1,8 @@
 # MacCE
 
+[![CI](https://github.com/3kyo0/macce/actions/workflows/ci.yml/badge.svg)](https://github.com/3kyo0/macce/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 macOS 原生的 Cheat Engine 风格内存扫描器，专门面向**在任意 Windows 翻译层下运行的目标进程**——Wine、CrossOver、Whisky、Kegworks、PlayOnMac、Apple 的 Game Porting Toolkit (GPTK)，以及游戏自带的私有 Wine。
 
 无需关闭 SIP、无需 sudo、无需 kext。仅靠一个 ad-hoc 签名 + `com.apple.security.cs.debugger` entitlement 的二进制，通过 `task_for_pid` / `mach_vm_*` 与内核打交道。
